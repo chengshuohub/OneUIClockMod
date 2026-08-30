@@ -7,11 +7,10 @@ import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SeekBarPreference;
-import androidx.preference.SwitchPreferenceCompat;
 
 import com.shoren.oneui.clockmod.R;
 import com.shoren.oneui.clockmod.utils.PrefKeys;
+import com.shoren.oneui.clockmod.ui.LogViewerActivity;
 
 /**
  * 设置界面：已全面汉化，提供一站式状态栏时钟与农历、天气、布局配置，并集成日志查看入口。
