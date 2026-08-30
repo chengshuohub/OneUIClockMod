@@ -29,6 +29,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 /**
  * Hooks Samsung One UI Status Bar Clock views to intercept time updates,
  * apply custom date formats, lunar calendar calculations, and live weather.
+ * 适配 One UI 8 及各版本三星系统时钟路径
  */
 public class ClockHook {
 
@@ -43,11 +44,15 @@ public class ClockHook {
     public static void init(XC_LoadPackage.LoadPackageParam lpparam, XSharedPreferences prefs) {
         loadConfig(prefs);
 
-        // Potential clock class names in Samsung One UI SystemUI
+        // 针对 One UI 8 及各代三星系统全面兼容的时钟类路径候选池
         String[] candidateClasses = new String[]{
             "com.android.systemui.statusbar.policy.Clock",
             "com.android.systemui.statusbar.views.DismissingStatusBarClockView",
-            "com.android.systemui.statusbar.views.Clock"
+            "com.android.systemui.statusbar.views.Clock",
+            // 补充 One UI 8 / 最新版 SystemUI 路径
+            "com.android.systemui.statusbar.phone.StatusBarClockView",
+            "com.samsung.systemui.statusbar.policy.Clock",
+            "com.android.systemui.statusbar.policy.QSClock"
         };
 
         boolean hookedAny = false;

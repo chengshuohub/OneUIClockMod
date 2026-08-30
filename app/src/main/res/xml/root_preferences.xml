@@ -22,8 +22,8 @@
             app:key="key_horizontal_offset"
             app:title="水平边距偏移 (X轴)"
             app:summary="微调状态栏左右间距，适配前置摄像头挖孔"
-            app:max="100"
-            app:min="-100"
+            android:max="100"
+            android:min="-100"
             app:defaultValue="0"
             app:showSeekBarValue="true" />
 
@@ -31,8 +31,8 @@
             app:key="key_vertical_offset"
             app:title="垂直边距偏移 (Y轴)"
             app:summary="微调时钟在状态栏中的上下对齐高度"
-            app:max="50"
-            app:min="-50"
+            android:max="50"
+            android:min="-50"
             app:defaultValue="0"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
@@ -116,8 +116,8 @@
             app:key="key_font_scale"
             app:title="字体大小缩放比例"
             app:summary="调整状态栏时钟文字大小 (推荐保持 100 默认大小)"
-            app:max="150"
-            app:min="50"
+            android:max="150"
+            android:min="50"
             app:defaultValue="100"
             app:showSeekBarValue="true" />
 
