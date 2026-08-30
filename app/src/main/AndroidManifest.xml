@@ -44,6 +44,13 @@
             </intent-filter>
         </activity>
 
+        <!-- 实时日志查看界面 Activity -->
+        <activity
+            android:name=".ui.LogViewerActivity"
+            android:exported="false"
+            android:label="运行日志调试"
+            android:theme="@style/Theme.OneUIClockMod" />
+
         <!-- Dynamic Weather Update Broadcast Receiver -->
         <receiver
             android:name=".receiver.WeatherReceiver"

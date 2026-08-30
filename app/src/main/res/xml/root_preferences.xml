@@ -142,6 +142,11 @@
 
     <PreferenceCategory app:title="操作与诊断">
         <Preference
+            app:key="key_open_log_viewer"
+            app:title="查看实时运行日志"
+            app:summary="打开内置日志界面，方便截图反馈排查" />
+
+        <Preference
             app:key="key_apply_changes"
             app:title="立即应用并广播更改"
             app:summary="强制向 SystemUI 发送即时刷新广播" />

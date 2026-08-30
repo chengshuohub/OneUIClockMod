@@ -14,7 +14,7 @@ import com.shoren.oneui.clockmod.R;
 import com.shoren.oneui.clockmod.utils.PrefKeys;
 
 /**
- * 设置界面：已全面汉化，提供一站式状态栏时钟与农历、天气、布局配置。
+ * 设置界面：已全面汉化，提供一站式状态栏时钟与农历、天气、布局配置，并集成日志查看入口。
  */
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -42,6 +42,16 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 } else {
                     Toast.makeText(requireContext(), "重启失败，请尝试手动重启手机或检查 Root 权限", Toast.LENGTH_LONG).show();
                 }
+                return true;
+            });
+        }
+
+        // 绑定查看实时运行日志的点击跳转事件
+        Preference logViewerPref = findPreference("key_open_log_viewer");
+        if (logViewerPref != null) {
+            logViewerPref.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(requireContext(), LogViewerActivity.class);
+                startActivity(intent);
                 return true;
             });
         }
