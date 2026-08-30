@@ -1,59 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- LSPosed Scope -->
-    <string-array name="xposed_scopes">
-        <item>com.android.systemui</item>
-    </string-array>
-
-    <!-- Clock Position Options -->
+    <!-- 时钟对齐位置 -->
     <string-array name="clock_position_entries">
-        <item>Left (Default One UI Position)</item>
-        <item>Center (Centered in Status Bar)</item>
-        <item>Right (Before Battery &amp; System Icons)</item>
-        <item>Hidden (Hide Status Bar Clock)</item>
+        <item>左侧 (默认 One UI 位置)</item>
+        <item>居中显示</item>
+        <item>右侧显示</item>
     </string-array>
     <string-array name="clock_position_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+        <item>left</item>
+        <item>center</item>
+        <item>right</item>
     </string-array>
 
-    <!-- Format Mode Options -->
+    <!-- 格式化模式 -->
     <string-array name="format_mode_entries">
-        <item>Smart Preset (Auto Time + Week + Lunar/Weather)</item>
-        <item>Custom Pattern String</item>
+        <item>智能预设 (时间 + 日期 + 农历/天气)</item>
+        <item>完全自定义格式字符串</item>
     </string-array>
     <string-array name="format_mode_values">
         <item>preset</item>
         <item>custom</item>
     </string-array>
 
-    <!-- Date Preset Options -->
+    <!-- 日期预设格式 -->
     <string-array name="date_preset_entries">
-        <item>None</item>
-        <item>M月d日 (e.g. 8月30日)</item>
-        <item>MM/dd (e.g. 08/30)</item>
-        <item>yyyy-MM-dd (e.g. 2026-08-30)</item>
-        <item>MMM d (e.g. Aug 30)</item>
+        <item>M月d日 (如 8月30日)</item>
+        <item>yyyy年M月d日</item>
+        <item>MM-dd</item>
+        <item>不显示日期</item>
     </string-array>
     <string-array name="date_preset_values">
-        <item>none</item>
         <item>M月d日</item>
-        <item>MM/dd</item>
-        <item>yyyy-MM-dd</item>
-        <item>MMM d</item>
+        <item>yyyy年M月d日</item>
+        <item>MM-dd</item>
+        <item>none</item>
     </string-array>
 
-    <!-- Week Format Options -->
-    <string-array name="week_format_entries">
-        <item>Short (周日, 周一…)</item>
-        <item>Full (星期日, 星期一…)</item>
-        <item>English Short (Sun, Mon…)</item>
-        <item>English Full (Sunday, Monday…)</item>
-        <item>Hidden</item>
+    <!-- 星期显示样式 -->
+    <string-array name="week_preset_entries">
+        <item>短中文 (周一、周二...)</item>
+        <item>长中文 (星期一、星期二...)</item>
+        <item>英文简写 (Mon, Tue...)</item>
+        <item>英文全称 (Monday, Tuesday...)</item>
+        <item>不显示星期</item>
     </string-array>
-    <string-array name="week_format_values">
+    <string-array name="week_preset_values">
         <item>zh_short</item>
         <item>zh_full</item>
         <item>en_short</item>
@@ -61,17 +52,15 @@
         <item>none</item>
     </string-array>
 
-    <!-- Weather Format Options -->
+    <!-- 天气显示格式 -->
     <string-array name="weather_format_entries">
-        <item>Icon + Temp (☀️ 28°)</item>
-        <item>Text + Temp (晴 28°C)</item>
-        <item>Temp Only (28°C)</item>
-        <item>Condition Only (晴)</item>
+        <item>文字 + 温度 (晴 28°C)</item>
+        <item>仅文字 (晴)</item>
+        <item>仅温度 (28°C)</item>
     </string-array>
     <string-array name="weather_format_values">
-        <item>icon_temp</item>
         <item>text_temp</item>
-        <item>temp_only</item>
         <item>text_only</item>
+        <item>temp_only</item>
     </string-array>
 </resources>
