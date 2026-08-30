@@ -28,6 +28,12 @@ public class ClockFormatter {
         public boolean enableWeather = false;
         public String weatherFormat = "text_temp";
         public boolean multiLine = false;
+        
+        // 已补齐的状态栏字体与颜色配置字段
+        public int fontScale = 100;                    // 字体大小缩放百分比 (默认 100)
+        public boolean enableCustomColor = false;      // 是否开启自定义颜色
+        public String customColorHex = "#FFFFFF";       // 自定义颜色的 Hex 值
+
         public WeatherHelper.WeatherInfo weatherInfo = null;
     }
 
