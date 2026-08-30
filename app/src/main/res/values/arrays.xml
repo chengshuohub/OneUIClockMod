@@ -63,4 +63,9 @@
         <item>text_only</item>
         <item>temp_only</item>
     </string-array>
+
+    <!-- 补充 LSPosed 作用域配置 -->
+    <string-array name="xposed_scopes">
+        <item>com.android.systemui</item>
+    </string-array>
 </resources>
