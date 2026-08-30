@@ -1,53 +1,47 @@
 package com.shoren.oneui.clockmod.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
+import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.shoren.oneui.clockmod.R;
 import com.shoren.oneui.clockmod.utils.PrefKeys;
-import com.shoren.oneui.clockmod.utils.WeatherHelper;
 
-import java.io.File;
-
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+/**
+ * 设置界面：已全面汉化，提供一站式状态栏时钟与农历、天气、布局配置。
+ */
+public class SettingsFragment extends PreferenceFragmentCompat
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
-    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 
-        // Click listeners for actions
-        Preference applyPref = findPreference("pref_apply_broadcast");
+        // 绑定手动触发广播和重启 SystemUI 的点击事件
+        Preference applyPref = findPreference("key_apply_changes");
         if (applyPref != null) {
-            applyPref.setOnPreferenceClickListener(pref -> {
-                broadcastSettings(requireContext());
-                Toast.makeText(requireContext(), R.string.toast_broadcast_sent, Toast.LENGTH_SHORT).show();
+            applyPref.setOnPreferenceClickListener(preference -> {
+                sendBroadcastToSystemUI();
+                Toast.makeText(requireContext(), "已成功应用并同步到系统时钟！", Toast.LENGTH_SHORT).show();
                 return true;
             });
         }
 
-        Preference restartPref = findPreference("pref_restart_systemui");
-        if (restartPref != null) {
-            restartPref.setOnPreferenceClickListener(pref -> {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).showRestartDialog();
+        Preference restartSysUiPref = findPreference("key_restart_sysui");
+        if (restartSysUiPref != null) {
+            restartSysUiPref.setOnPreferenceClickListener(preference -> {
+                boolean success = restartSystemUI();
+                if (success) {
+                    Toast.makeText(requireContext(), "正在重启 SystemUI...", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "重启失败，请尝试手动重启手机或检查 Root 权限", Toast.LENGTH_LONG).show();
                 }
-                return true;
-            });
-        }
-
-        Preference weatherTestPref = findPreference("pref_test_weather");
-        if (weatherTestPref != null) {
-            weatherTestPref.setOnPreferenceClickListener(pref -> {
-                sendTestWeatherBroadcast(requireContext());
-                Toast.makeText(requireContext(), "Test weather broadcasted (Sunny 28°C)", Toast.LENGTH_SHORT).show();
                 return true;
             });
         }
@@ -56,30 +50,34 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        if (getPreferenceManager().getSharedPreferences() != null) {
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        makePrefsWorldReadable(requireContext());
+        if (getPreferenceManager().getSharedPreferences() != null) {
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        broadcastSettings(requireContext());
-        makePrefsWorldReadable(requireContext());
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).updateLivePreview();
-        }
+        // 当任何配置改变时，自动发送广播实时通知系统界面更新
+        sendBroadcastToSystemUI();
     }
 
-    private void broadcastSettings(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    private void sendBroadcastToSystemUI() {
+        if (getContext() == null) return;
+        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        if (prefs == null) return;
+
         Intent intent = new Intent(PrefKeys.ACTION_PREF_CHANGED);
         intent.setPackage("com.android.systemui");
 
+        // 收集所有配置项并通过 Intent 传递给 Xposed Hook 模块
         intent.putExtra(PrefKeys.KEY_MODULE_ENABLED, prefs.getBoolean(PrefKeys.KEY_MODULE_ENABLED, PrefKeys.DEFAULT_MODULE_ENABLED));
         intent.putExtra(PrefKeys.KEY_FORMAT_MODE, prefs.getString(PrefKeys.KEY_FORMAT_MODE, PrefKeys.DEFAULT_FORMAT_MODE));
         intent.putExtra(PrefKeys.KEY_CUSTOM_PATTERN, prefs.getString(PrefKeys.KEY_CUSTOM_PATTERN, PrefKeys.DEFAULT_CUSTOM_PATTERN));
@@ -96,49 +94,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         intent.putExtra(PrefKeys.KEY_CUSTOM_COLOR_HEX, prefs.getString(PrefKeys.KEY_CUSTOM_COLOR_HEX, PrefKeys.DEFAULT_CUSTOM_COLOR_HEX));
         intent.putExtra(PrefKeys.KEY_MULTI_LINE, prefs.getBoolean(PrefKeys.KEY_MULTI_LINE, PrefKeys.DEFAULT_MULTI_LINE));
 
-        int pos = PrefKeys.DEFAULT_CLOCK_POSITION;
-        try {
-            pos = Integer.parseInt(prefs.getString(PrefKeys.KEY_CLOCK_POSITION, String.valueOf(PrefKeys.DEFAULT_CLOCK_POSITION)));
-        } catch (Exception e) {
-            pos = prefs.getInt(PrefKeys.KEY_CLOCK_POSITION, PrefKeys.DEFAULT_CLOCK_POSITION);
-        }
-        intent.putExtra(PrefKeys.KEY_CLOCK_POSITION, pos);
-        intent.putExtra(PrefKeys.KEY_CLOCK_OFFSET_X, prefs.getInt(PrefKeys.KEY_CLOCK_OFFSET_X, PrefKeys.DEFAULT_CLOCK_OFFSET_X));
-        intent.putExtra(PrefKeys.KEY_CLOCK_OFFSET_Y, prefs.getInt(PrefKeys.KEY_CLOCK_OFFSET_Y, PrefKeys.DEFAULT_CLOCK_OFFSET_Y));
-
-        context.sendBroadcast(intent);
+        requireContext().sendBroadcast(intent);
     }
 
-    private void sendTestWeatherBroadcast(Context context) {
-        WeatherHelper.WeatherInfo info = new WeatherHelper.WeatherInfo("晴", "28°C", "☀️", System.currentTimeMillis());
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        WeatherHelper.saveToPreferences(prefs, info);
-
-        Intent intent = new Intent(PrefKeys.ACTION_UPDATE_WEATHER);
-        intent.setPackage("com.android.systemui");
-        intent.putExtra("condition", "晴");
-        intent.putExtra("temp", "28°C");
-        intent.putExtra("icon", "☀️");
-        context.sendBroadcast(intent);
-
-        if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).updateLivePreview();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void makePrefsWorldReadable(Context context) {
+    private boolean restartSystemUI() {
         try {
-            File prefsDir = new File(context.getApplicationInfo().dataDir, "shared_prefs");
-            File prefsFile = new File(prefsDir, PrefKeys.PREFS_NAME + ".xml");
-            if (prefsFile.exists()) {
-                prefsFile.setReadable(true, false);
-                prefsFile.setExecutable(true, false);
-            }
-            if (prefsDir.exists()) {
-                prefsDir.setReadable(true, false);
-                prefsDir.setExecutable(true, false);
-            }
-        } catch (Exception ignored) {}
+            // 尝试通过 Root 命令重启系统界面
+            Process process = Runtime.getRuntime().exec(new String[]{"su", "-c", "pkill -f com.android.systemui"});
+            process.waitFor();
+            return process.exitValue() == 0;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 }

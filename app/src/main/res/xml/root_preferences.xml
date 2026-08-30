@@ -1,179 +1,155 @@
-<?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        app:title="@string/cat_master_switch">
+    <PreferenceCategory app:title="总开关">
         <SwitchPreferenceCompat
-            app:key="pref_module_enabled"
-            app:title="@string/pref_enable_module_title"
-            app:summary="@string/pref_enable_module_summary"
+            app:key="key_module_enabled"
+            app:title="启用时钟美化定制"
+            app:summary="将所有自定义样式应用到三星状态栏时钟"
             app:defaultValue="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_position"
-        app:dependency="pref_module_enabled">
+    <PreferenceCategory app:title="时钟位置与布局">
         <ListPreference
-            app:key="pref_clock_position"
-            app:title="@string/pref_clock_position_title"
-            app:summary="%s"
+            app:key="key_clock_position"
+            app:title="时钟对齐位置"
+            app:summary="选择时钟在状态栏中的停靠位置"
             app:entries="@array/clock_position_entries"
             app:entryValues="@array/clock_position_values"
-            app:defaultValue="0" />
+            app:defaultValue="left" />
 
         <SeekBarPreference
-            app:key="pref_clock_offset_x"
-            app:title="@string/pref_clock_margin_x_title"
-            app:summary="@string/pref_clock_margin_x_summary"
-            android:max="100"
+            app:key="key_horizontal_offset"
+            app:title="水平边距偏移 (X轴)"
+            app:summary="微调状态栏左右间距，适配前置摄像头挖孔"
+            app:max="100"
             app:min="-100"
             app:defaultValue="0"
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            app:key="pref_clock_offset_y"
-            app:title="@string/pref_clock_margin_y_title"
-            app:summary="@string/pref_clock_margin_y_summary"
-            android:max="50"
+            app:key="key_vertical_offset"
+            app:title="垂直边距偏移 (Y轴)"
+            app:summary="微调时钟在状态栏中的上下对齐高度"
+            app:max="50"
             app:min="-50"
             app:defaultValue="0"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_time_date"
-        app:dependency="pref_module_enabled">
+    <PreferenceCategory app:title="时间和日期格式">
         <ListPreference
-            app:key="pref_format_mode"
-            app:title="@string/pref_format_mode_title"
-            app:summary="%s"
+            app:key="key_format_mode"
+            app:title="格式化模式"
+            app:summary="选择预设组合或完全自定义格式"
             app:entries="@array/format_mode_entries"
             app:entryValues="@array/format_mode_values"
             app:defaultValue="preset" />
 
         <EditTextPreference
-            app:key="pref_custom_pattern"
-            app:title="@string/pref_custom_format_title"
-            app:summary="@string/pref_custom_format_summary"
-            app:defaultValue="@string/pref_custom_format_default"
-            app:dependency="pref_format_mode" />
+            app:key="key_custom_pattern"
+            app:title="自定义格式字符串"
+            app:summary="可用标签: {TIME}, {TIME_SEC}, {DATE}, {WEEK}, {LUNAR}, {WEATHER}, \\n"
+            app:defaultValue="{TIME} {WEEK} {LUNAR}" />
 
         <SwitchPreferenceCompat
-            app:key="pref_show_seconds"
-            app:title="@string/pref_show_seconds_title"
-            app:summary="@string/pref_show_seconds_summary"
+            app:key="key_show_seconds"
+            app:title="显示秒数"
+            app:summary="在时钟后方实时跳动显示秒数 (:ss)"
             app:defaultValue="false" />
 
         <ListPreference
-            app:key="pref_date_preset"
-            app:title="@string/pref_date_format_preset_title"
-            app:summary="%s"
+            app:key="key_date_preset"
+            app:title="日期预设格式"
+            app:summary="选择状态栏日期的显示样式"
             app:entries="@array/date_preset_entries"
             app:entryValues="@array/date_preset_values"
             app:defaultValue="M月d日" />
 
         <ListPreference
-            app:key="pref_week_preset"
-            app:title="@string/pref_week_format_title"
-            app:summary="%s"
-            app:entries="@array/week_format_entries"
-            app:entryValues="@array/week_format_values"
+            app:key="key_week_preset"
+            app:title="星期显示样式"
+            app:summary="选择星期的呈现方式 (如 周一 / 星期一)"
+            app:entries="@array/week_preset_entries"
+            app:entryValues="@array/week_preset_values"
             app:defaultValue="zh_short" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_lunar"
-        app:dependency="pref_module_enabled">
+    <PreferenceCategory app:title="农历与节气 (中国特色)">
         <SwitchPreferenceCompat
-            app:key="pref_enable_lunar"
-            app:title="@string/pref_enable_lunar_title"
-            app:summary="@string/pref_enable_lunar_summary"
+            app:key="key_enable_lunar"
+            app:title="启用农历显示"
+            app:summary="在日期后方自动追加农历日期 (如 七月初八)"
             app:defaultValue="true" />
 
         <SwitchPreferenceCompat
-            app:key="pref_lunar_show_year"
-            app:title="@string/pref_lunar_show_year_title"
-            app:summary="@string/pref_lunar_show_year_summary"
-            app:defaultValue="false"
-            app:dependency="pref_enable_lunar" />
+            app:key="key_lunar_show_year"
+            app:title="显示农历年份与生肖"
+            app:summary="包含天干地支和生肖年 (如 丙午年/蛇年)"
+            app:defaultValue="false" />
 
         <SwitchPreferenceCompat
-            app:key="pref_lunar_show_solar_term"
-            app:title="@string/pref_lunar_show_solar_term_title"
-            app:summary="@string/pref_lunar_show_solar_term_summary"
-            app:defaultValue="true"
-            app:dependency="pref_enable_lunar" />
+            app:key="key_lunar_show_solar_term"
+            app:title="显示二十四节气"
+            app:summary="逢节气当天自动显示 (如 立春、白露)"
+            app:defaultValue="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_weather"
-        app:dependency="pref_module_enabled">
+    <PreferenceCategory app:title="天气集成">
         <SwitchPreferenceCompat
-            app:key="pref_enable_weather"
-            app:title="@string/pref_enable_weather_title"
-            app:summary="@string/pref_enable_weather_summary"
+            app:key="key_enable_weather"
+            app:title="启用状态栏天气"
+            app:summary="挂钩三星天气服务或接收自定义天气更新"
             app:defaultValue="false" />
 
         <ListPreference
-            app:key="pref_weather_format"
-            app:title="@string/pref_weather_format_title"
-            app:summary="%s"
+            app:key="key_weather_format"
+            app:title="天气显示格式"
+            app:summary="选择天气和温度的组合展示方式"
             app:entries="@array/weather_format_entries"
             app:entryValues="@array/weather_format_values"
-            app:defaultValue="text_temp"
-            app:dependency="pref_enable_weather" />
-
-        <Preference
-            app:key="pref_test_weather"
-            app:title="@string/pref_weather_test_title"
-            app:summary="@string/pref_weather_test_summary"
-            app:dependency="pref_enable_weather" />
+            app:defaultValue="text_temp" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_style"
-        app:dependency="pref_module_enabled">
+    <PreferenceCategory app:title="字体与外观">
         <SeekBarPreference
-            app:key="pref_font_scale"
-            app:title="@string/pref_font_size_title"
-            app:summary="@string/pref_font_size_summary"
-            android:max="140"
-            app:min="70"
+            app:key="key_font_scale"
+            app:title="字体大小缩放比例"
+            app:summary="调整状态栏时钟文字大小 (推荐保持 100 默认大小)"
+            app:max="150"
+            app:min="50"
             app:defaultValue="100"
             app:showSeekBarValue="true" />
 
         <SwitchPreferenceCompat
-            app:key="pref_enable_custom_color"
-            app:title="@string/pref_custom_color_enable_title"
-            app:summary="@string/pref_custom_color_enable_summary"
+            app:key="key_enable_custom_color"
+            app:title="自定义文字颜色"
+            app:summary="覆盖系统默认主题色，使用指定的 Hex 颜色"
             app:defaultValue="false" />
 
         <EditTextPreference
-            app:key="pref_custom_color_hex"
-            app:title="@string/pref_custom_color_title"
-            app:summary="Hex color string (e.g. #FFFFFFFF, #00FFCC)"
-            app:defaultValue="#FFFFFFFF"
-            app:dependency="pref_enable_custom_color" />
+            app:key="key_custom_color_hex"
+            app:title="十六进制颜色代码"
+            app:summary="输入颜色值 (例如: #FFFFFFFF 或 #00FFCC)"
+            app:defaultValue="#FFFFFF" />
 
         <SwitchPreferenceCompat
-            app:key="pref_multi_line"
-            app:title="@string/pref_multi_line_title"
-            app:summary="@string/pref_multi_line_summary"
+            app:key="key_multi_line"
+            app:title="双行紧凑布局"
+            app:summary="优化双行文字间距 (上方时间，下方日期/农历)"
             app:defaultValue="false" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        app:title="@string/cat_system">
+    <PreferenceCategory app:title="操作与诊断">
         <Preference
-            app:key="pref_apply_broadcast"
-            app:title="@string/action_apply_live"
-            app:summary="Force immediate broadcast to SystemUI" />
+            app:key="key_apply_changes"
+            app:title="立即应用并广播更改"
+            app:summary="强制向 SystemUI 发送即时刷新广播" />
 
         <Preference
-            app:key="pref_restart_systemui"
-            app:title="@string/action_restart_systemui"
-            app:summary="@string/action_restart_systemui_summary" />
+            app:key="key_restart_sysui"
+            app:title="重启系统界面 (SystemUI)"
+            app:summary="强行停止并重启 SystemUI 以加载 Hook (需授权 Root)" />
     </PreferenceCategory>
 
 </PreferenceScreen>
