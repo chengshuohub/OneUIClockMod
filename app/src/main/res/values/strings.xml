@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">One UI Clock Mod</string>
+    <string name="xposed_description">Customize Samsung Galaxy S23 Ultra (One UI) Status Bar Clock: position, custom format, weekday, lunar calendar, and weather.</string>
+
+    <!-- Categories -->
+    <string name="cat_master_switch">Master Switch</string>
+    <string name="cat_position">Clock Position &amp; Layout</string>
+    <string name="cat_time_date">Time &amp; Date Formatting</string>
+    <string name="cat_lunar">Lunar Calendar (农历)</string>
+    <string name="cat_weather">Weather Integration</string>
+    <string name="cat_style">Font &amp; Appearance</string>
+    <string name="cat_system">Actions &amp; Diagnostics</string>
+
+    <!-- Master Switch -->
+    <string name="pref_enable_module_title">Enable Clock Customization</string>
+    <string name="pref_enable_module_summary">Apply all customized settings to Samsung SystemUI status bar</string>
+
+    <!-- Position -->
+    <string name="pref_clock_position_title">Clock Position</string>
+    <string name="pref_clock_position_summary">Select status bar clock alignment</string>
+    <string name="pref_clock_margin_x_title">Horizontal Offset (X Margin)</string>
+    <string name="pref_clock_margin_x_summary">Fine-tune horizontal spacing around S23 Ultra front camera / edges</string>
+    <string name="pref_clock_margin_y_title">Vertical Offset (Y Margin)</string>
+    <string name="pref_clock_margin_y_summary">Fine-tune vertical alignment in status bar</string>
+
+    <!-- Time & Date -->
+    <string name="pref_format_mode_title">Format Mode</string>
+    <string name="pref_format_mode_summary">Choose preset combination or full custom pattern</string>
+    <string name="pref_custom_format_title">Custom Pattern String</string>
+    <string name="pref_custom_format_summary">Use tags: {TIME}, {TIME_SEC}, {DATE}, {WEEK}, {LUNAR}, {LUNAR_YEAR}, {SOLAR_TERM}, {WEATHER}, \\n (newline)</string>
+    <string name="pref_custom_format_default">{TIME} {WEEK} {LUNAR}</string>
+    <string name="pref_show_seconds_title">Show Seconds</string>
+    <string name="pref_show_seconds_summary">Display real-time seconds ticking (:ss)</string>
+    <string name="pref_date_format_preset_title">Date Format Preset</string>
+    <string name="pref_week_format_title">Weekday Style</string>
+
+    <!-- Lunar Calendar -->
+    <string name="pref_enable_lunar_title">Enable Lunar Calendar</string>
+    <string name="pref_enable_lunar_summary">Calculate and append Chinese Lunar date (e.g. 七月廿八)</string>
+    <string name="pref_lunar_show_year_title">Show Lunar Year / GanZhi</string>
+    <string name="pref_lunar_show_year_summary">Include Heavenly Stems &amp; Earthly Branches (e.g. 丙午年 / 龙年)</string>
+    <string name="pref_lunar_show_solar_term_title">Show 24 Solar Terms (节气)</string>
+    <string name="pref_lunar_show_solar_term_summary">Display terms like 处暑, 白露, 春分 when applicable</string>
+
+    <!-- Weather -->
+    <string name="pref_enable_weather_title">Enable Status Bar Weather</string>
+    <string name="pref_enable_weather_summary">Hook Samsung Weather service or receive custom weather updates</string>
+    <string name="pref_weather_format_title">Weather Display Format</string>
+    <string name="pref_weather_test_title">Broadcast Weather Test</string>
+    <string name="pref_weather_test_summary">Send simulated weather data (Sunny 28°C) to status bar</string>
+
+    <!-- Style -->
+    <string name="pref_font_size_title">Font Size Scale</string>
+    <string name="pref_font_size_summary">Adjust status bar clock text scale (80% - 130%)</string>
+    <string name="pref_custom_color_enable_title">Custom Text Color</string>
+    <string name="pref_custom_color_enable_summary">Override default system theme tint with custom hex color</string>
+    <string name="pref_custom_color_title">Color Hex Code</string>
+    <string name="pref_multi_line_title">Multi-Line Compact Layout</string>
+    <string name="pref_multi_line_summary">Optimize dual-line text spacing (time on top, date/lunar below)</string>
+
+    <!-- Actions -->
+    <string name="action_restart_systemui">Restart SystemUI</string>
+    <string name="action_restart_systemui_summary">Force stop SystemUI to reload hooks if needed (Root)</string>
+    <string name="action_apply_live">Apply &amp; Broadcast Changes</string>
+    <string name="toast_broadcast_sent">Settings broadcasted to SystemUI in real-time!</string>
+    <string name="toast_restart_sent">Restarting SystemUI...</string>
+    <string name="dialog_restart_title">SystemUI Restart</string>
+    <string name="dialog_restart_message">Do you want to restart SystemUI with root permissions to force full re-initialization?</string>
+    <string name="dialog_positive">Restart</string>
+    <string name="dialog_negative">Cancel</string>
+
+    <!-- Live Preview -->
+    <string name="preview_title">Live Status Bar Preview</string>
+    <string name="preview_placeholder">12:08:36 周日 七月廿八 晴 28°C</string>
+</resources>

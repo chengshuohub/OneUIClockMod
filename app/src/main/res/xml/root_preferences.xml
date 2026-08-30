@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="@string/cat_master_switch">
+        <SwitchPreferenceCompat
+            app:key="pref_module_enabled"
+            app:title="@string/pref_enable_module_title"
+            app:summary="@string/pref_enable_module_summary"
+            app:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_position"
+        app:dependency="pref_module_enabled">
+        <ListPreference
+            app:key="pref_clock_position"
+            app:title="@string/pref_clock_position_title"
+            app:summary="%s"
+            app:entries="@array/clock_position_entries"
+            app:entryValues="@array/clock_position_values"
+            app:defaultValue="0" />
+
+        <SeekBarPreference
+            app:key="pref_clock_offset_x"
+            app:title="@string/pref_clock_margin_x_title"
+            app:summary="@string/pref_clock_margin_x_summary"
+            android:max="100"
+            app:min="-100"
+            app:defaultValue="0"
+            app:showSeekBarValue="true" />
+
+        <SeekBarPreference
+            app:key="pref_clock_offset_y"
+            app:title="@string/pref_clock_margin_y_title"
+            app:summary="@string/pref_clock_margin_y_summary"
+            android:max="50"
+            app:min="-50"
+            app:defaultValue="0"
+            app:showSeekBarValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_time_date"
+        app:dependency="pref_module_enabled">
+        <ListPreference
+            app:key="pref_format_mode"
+            app:title="@string/pref_format_mode_title"
+            app:summary="%s"
+            app:entries="@array/format_mode_entries"
+            app:entryValues="@array/format_mode_values"
+            app:defaultValue="preset" />
+
+        <EditTextPreference
+            app:key="pref_custom_pattern"
+            app:title="@string/pref_custom_format_title"
+            app:summary="@string/pref_custom_format_summary"
+            app:defaultValue="@string/pref_custom_format_default"
+            app:dependency="pref_format_mode" />
+
+        <SwitchPreferenceCompat
+            app:key="pref_show_seconds"
+            app:title="@string/pref_show_seconds_title"
+            app:summary="@string/pref_show_seconds_summary"
+            app:defaultValue="false" />
+
+        <ListPreference
+            app:key="pref_date_preset"
+            app:title="@string/pref_date_format_preset_title"
+            app:summary="%s"
+            app:entries="@array/date_preset_entries"
+            app:entryValues="@array/date_preset_values"
+            app:defaultValue="M月d日" />
+
+        <ListPreference
+            app:key="pref_week_preset"
+            app:title="@string/pref_week_format_title"
+            app:summary="%s"
+            app:entries="@array/week_format_entries"
+            app:entryValues="@array/week_format_values"
+            app:defaultValue="zh_short" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_lunar"
+        app:dependency="pref_module_enabled">
+        <SwitchPreferenceCompat
+            app:key="pref_enable_lunar"
+            app:title="@string/pref_enable_lunar_title"
+            app:summary="@string/pref_enable_lunar_summary"
+            app:defaultValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="pref_lunar_show_year"
+            app:title="@string/pref_lunar_show_year_title"
+            app:summary="@string/pref_lunar_show_year_summary"
+            app:defaultValue="false"
+            app:dependency="pref_enable_lunar" />
+
+        <SwitchPreferenceCompat
+            app:key="pref_lunar_show_solar_term"
+            app:title="@string/pref_lunar_show_solar_term_title"
+            app:summary="@string/pref_lunar_show_solar_term_summary"
+            app:defaultValue="true"
+            app:dependency="pref_enable_lunar" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_weather"
+        app:dependency="pref_module_enabled">
+        <SwitchPreferenceCompat
+            app:key="pref_enable_weather"
+            app:title="@string/pref_enable_weather_title"
+            app:summary="@string/pref_enable_weather_summary"
+            app:defaultValue="false" />
+
+        <ListPreference
+            app:key="pref_weather_format"
+            app:title="@string/pref_weather_format_title"
+            app:summary="%s"
+            app:entries="@array/weather_format_entries"
+            app:entryValues="@array/weather_format_values"
+            app:defaultValue="text_temp"
+            app:dependency="pref_enable_weather" />
+
+        <Preference
+            app:key="pref_test_weather"
+            app:title="@string/pref_weather_test_title"
+            app:summary="@string/pref_weather_test_summary"
+            app:dependency="pref_enable_weather" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_style"
+        app:dependency="pref_module_enabled">
+        <SeekBarPreference
+            app:key="pref_font_scale"
+            app:title="@string/pref_font_size_title"
+            app:summary="@string/pref_font_size_summary"
+            android:max="140"
+            app:min="70"
+            app:defaultValue="100"
+            app:showSeekBarValue="true" />
+
+        <SwitchPreferenceCompat
+            app:key="pref_enable_custom_color"
+            app:title="@string/pref_custom_color_enable_title"
+            app:summary="@string/pref_custom_color_enable_summary"
+            app:defaultValue="false" />
+
+        <EditTextPreference
+            app:key="pref_custom_color_hex"
+            app:title="@string/pref_custom_color_title"
+            app:summary="Hex color string (e.g. #FFFFFFFF, #00FFCC)"
+            app:defaultValue="#FFFFFFFF"
+            app:dependency="pref_enable_custom_color" />
+
+        <SwitchPreferenceCompat
+            app:key="pref_multi_line"
+            app:title="@string/pref_multi_line_title"
+            app:summary="@string/pref_multi_line_summary"
+            app:defaultValue="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/cat_system">
+        <Preference
+            app:key="pref_apply_broadcast"
+            app:title="@string/action_apply_live"
+            app:summary="Force immediate broadcast to SystemUI" />
+
+        <Preference
+            app:key="pref_restart_systemui"
+            app:title="@string/action_restart_systemui"
+            app:summary="@string/action_restart_systemui_summary" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

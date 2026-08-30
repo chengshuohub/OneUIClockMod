@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- LSPosed Scope -->
+    <string-array name="xposed_scopes">
+        <item>com.android.systemui</item>
+    </string-array>
+
+    <!-- Clock Position Options -->
+    <string-array name="clock_position_entries">
+        <item>Left (Default One UI Position)</item>
+        <item>Center (Centered in Status Bar)</item>
+        <item>Right (Before Battery &amp; System Icons)</item>
+        <item>Hidden (Hide Status Bar Clock)</item>
+    </string-array>
+    <string-array name="clock_position_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Format Mode Options -->
+    <string-array name="format_mode_entries">
+        <item>Smart Preset (Auto Time + Week + Lunar/Weather)</item>
+        <item>Custom Pattern String</item>
+    </string-array>
+    <string-array name="format_mode_values">
+        <item>preset</item>
+        <item>custom</item>
+    </string-array>
+
+    <!-- Date Preset Options -->
+    <string-array name="date_preset_entries">
+        <item>None</item>
+        <item>M月d日 (e.g. 8月30日)</item>
+        <item>MM/dd (e.g. 08/30)</item>
+        <item>yyyy-MM-dd (e.g. 2026-08-30)</item>
+        <item>MMM d (e.g. Aug 30)</item>
+    </string-array>
+    <string-array name="date_preset_values">
+        <item>none</item>
+        <item>M月d日</item>
+        <item>MM/dd</item>
+        <item>yyyy-MM-dd</item>
+        <item>MMM d</item>
+    </string-array>
+
+    <!-- Week Format Options -->
+    <string-array name="week_format_entries">
+        <item>Short (周日, 周一…)</item>
+        <item>Full (星期日, 星期一…)</item>
+        <item>English Short (Sun, Mon…)</item>
+        <item>English Full (Sunday, Monday…)</item>
+        <item>Hidden</item>
+    </string-array>
+    <string-array name="week_format_values">
+        <item>zh_short</item>
+        <item>zh_full</item>
+        <item>en_short</item>
+        <item>en_full</item>
+        <item>none</item>
+    </string-array>
+
+    <!-- Weather Format Options -->
+    <string-array name="weather_format_entries">
+        <item>Icon + Temp (☀️ 28°)</item>
+        <item>Text + Temp (晴 28°C)</item>
+        <item>Temp Only (28°C)</item>
+        <item>Condition Only (晴)</item>
+    </string-array>
+    <string-array name="weather_format_values">
+        <item>icon_temp</item>
+        <item>text_temp</item>
+        <item>temp_only</item>
+        <item>text_only</item>
+    </string-array>
+</resources>

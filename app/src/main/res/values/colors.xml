@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Samsung One UI Color Palette -->
+    <color name="primary">#0381FE</color>
+    <color name="primary_dark">#0060C0</color>
+    <color name="accent">#0381FE</color>
+    <color name="background_light">#F5F6F8</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="text_primary">#1C1C1E</color>
+    <color name="text_secondary">#8E8E93</color>
+    <color name="divider">#E5E5EA</color>
+    <color name="status_bar_preview_bg">#18191B</color>
+    <color name="status_bar_clock_text">#FFFFFF</color>
+</resources>
