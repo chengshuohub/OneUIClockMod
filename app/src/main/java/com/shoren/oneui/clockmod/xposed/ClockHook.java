@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.TextView;
 
 import com.shoren.oneui.clockmod.utils.ClockFormatter;
@@ -26,10 +25,6 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-/**
- * 核心 Xposed Hook 类：负责拦截三星 One UI 状态栏时钟视图，
- * 注入自定义时间格式、农历、天气以及秒数实时跳动逻辑，并自带详细调试日志。
- */
 public class ClockHook {
 
     private static final String TAG = "OneUIClockMod_Debug";
@@ -41,15 +36,18 @@ public class ClockHook {
     private static BroadcastReceiver sDynamicReceiver;
 
     public static void init(XC_LoadPackage.LoadPackageParam lpparam, XSharedPreferences prefs) {
-        XposedBridge.log(TAG + ": === ClockHook 模块开始初始化，目标包名: " + lpparam.packageName + " ===");
+        XposedBridge.log(TAG + ": === ClockHook 初始化 (Target: " + lpparam.packageName + ") ===");
         loadConfig(prefs);
 
+        // 扩充三星 One UI 8 及各版本核心时钟类 Candidate 候选池
         String[] candidateClasses = new String[]{
             "com.android.systemui.statusbar.policy.Clock",
             "com.android.systemui.statusbar.views.DismissingStatusBarClockView",
             "com.android.systemui.statusbar.views.Clock",
             "com.android.systemui.statusbar.phone.StatusBarClockView",
             "com.samsung.systemui.statusbar.policy.Clock",
+            "com.samsung.android.systemui.statusbar.policy.SamsungClock",
+            "com.samsung.android.systemui.statusbar.views.SamsungClockView",
             "com.android.systemui.statusbar.policy.QSClock"
         };
 
@@ -60,15 +58,15 @@ public class ClockHook {
                 if (clockClass != null && TextView.class.isAssignableFrom(clockClass)) {
                     hookClockClass(clockClass);
                     hookedAny = true;
-                    XposedBridge.log(TAG + ": >>> 成功 Hook 时钟类: " + className);
+                    XposedBridge.log(TAG + ": >>> 成功挂钩时钟控件类: " + className);
                 }
             } catch (Throwable t) {
-                XposedBridge.log(TAG + ": Hook 类 " + className + " 异常 -> " + t.getMessage());
+                XposedBridge.log(TAG + ": 挂钩 " + className + " 失败: " + t.getMessage());
             }
         }
 
         if (!hookedAny) {
-            XposedBridge.log(TAG + ": !!! 警告: 未能匹配任何时钟类！");
+            XposedBridge.log(TAG + ": !!! 警告: 没有在 SystemUI 中识别到任何匹配的时钟类！");
         }
     }
 
@@ -77,6 +75,7 @@ public class ClockHook {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 TextView clockView = (TextView) param.thisObject;
+                XposedBridge.log(TAG + ": View Attached: " + clockView.getClass().getName());
                 registerClockView(clockView);
                 ensureBroadcastReceiver(clockView.getContext());
                 applyCustomFormatting(clockView);
@@ -98,8 +97,7 @@ public class ClockHook {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (sConfig.moduleEnabled) {
-                        TextView clockView = (TextView) param.thisObject;
-                        applyCustomFormatting(clockView);
+                        applyCustomFormatting((TextView) param.thisObject);
                     }
                 }
             });
@@ -111,11 +109,8 @@ public class ClockHook {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     if (sConfig.moduleEnabled) {
                         TextView clockView = (TextView) param.thisObject;
-                        Calendar calendar = (Calendar) XposedHelpers.getObjectField(clockView, "mCalendar");
-                        if (calendar == null) {
-                            calendar = Calendar.getInstance();
-                        }
-                        CharSequence customText = ClockFormatter.format(clockView.getContext(), calendar, sConfig);
+                        Calendar cal = Calendar.getInstance();
+                        CharSequence customText = ClockFormatter.format(clockView.getContext(), cal, sConfig);
                         param.setResult(customText);
                     }
                 }
@@ -177,8 +172,7 @@ public class ClockHook {
         sDynamicReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context ctx, Intent intent) {
-                String action = intent.getAction();
-                if (PrefKeys.ACTION_PREF_CHANGED.equals(action)) {
+                if (PrefKeys.ACTION_PREF_CHANGED.equals(intent.getAction())) {
                     loadConfigFromIntent(intent);
                     updateAllClocks();
                     checkSecondsTicker();
@@ -186,8 +180,7 @@ public class ClockHook {
             }
         };
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(PrefKeys.ACTION_PREF_CHANGED);
+        IntentFilter filter = new IntentFilter(PrefKeys.ACTION_PREF_CHANGED);
         try {
             context.getApplicationContext().registerReceiver(sDynamicReceiver, filter, Context.RECEIVER_EXPORTED);
         } catch (Throwable t) {

@@ -1,6 +1,9 @@
 package com.shoren.oneui.clockmod.xposed;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
@@ -30,12 +33,14 @@ public class StatusBarLayoutHook {
 
     private static final String TAG = "OneUIClockMod_LayoutHook";
 
-    private static int sClockPosition = PrefKeys.DEFAULT_CLOCK_POSITION;
-    private static int sOffsetX = PrefKeys.DEFAULT_CLOCK_OFFSET_X;
-    private static int sOffsetY = PrefKeys.DEFAULT_CLOCK_OFFSET_Y;
-    private static boolean sModuleEnabled = PrefKeys.DEFAULT_MODULE_ENABLED;
+    // 适配你的字符串 "left", "center", "right" (防止强转 int 报错)
+    private static String sClockPosition = "left"; 
+    private static int sOffsetX = 0;
+    private static int sOffsetY = 0;
+    private static boolean sModuleEnabled = true;
 
     private static final List<ClockContainerHolder> sHolders = new ArrayList<>();
+    private static BroadcastReceiver sDynamicReceiver;
 
     public static class ClockContainerHolder {
         public WeakReference<View> clockViewRef;
@@ -88,6 +93,9 @@ public class StatusBarLayoutHook {
         if (statusBarView == null) return;
 
         Context context = statusBarView.getContext();
+        // 关键：注册广播接收器，这样调整边距时才能实时生效
+        ensureBroadcastReceiver(context); 
+
         int clockId = context.getResources().getIdentifier("clock", "id", "com.android.systemui");
         if (clockId == 0) {
             clockId = context.getResources().getIdentifier("status_bar_clock", "id", "com.android.systemui");
@@ -95,7 +103,6 @@ public class StatusBarLayoutHook {
 
         View clockView = clockId != 0 ? statusBarView.findViewById(clockId) : null;
         if (clockView == null) {
-            // Find by type
             clockView = findClockViewRecursively(statusBarView);
         }
 
@@ -108,11 +115,8 @@ public class StatusBarLayoutHook {
         if (originalParent == null) return;
 
         int originalIndex = originalParent.indexOfChild(clockView);
-
-        // Find or create Center Container
         ViewGroup centerContainer = findOrCreateCenterContainer(statusBarView);
 
-        // Find Right Container (system icon area / battery area)
         int systemIconsId = context.getResources().getIdentifier("system_icons", "id", "com.android.systemui");
         if (systemIconsId == 0) {
             systemIconsId = context.getResources().getIdentifier("system_icon_area", "id", "com.android.systemui");
@@ -142,7 +146,6 @@ public class StatusBarLayoutHook {
             if (existing != null) return existing;
         }
 
-        // Create an overlay FrameLayout centered in statusBarView
         FrameLayout centerLayout = new FrameLayout(context);
         centerLayout.setId(View.generateViewId());
         FrameLayout.LayoutParams lp;
@@ -202,7 +205,6 @@ public class StatusBarLayoutHook {
         if (clock == null || originalParent == null) return;
 
         if (!sModuleEnabled) {
-            // Restore default
             restoreToOriginal(clock, originalParent, holder.originalIndex);
             clock.setVisibility(View.VISIBLE);
             resetMargins(clock);
@@ -210,11 +212,13 @@ public class StatusBarLayoutHook {
         }
 
         switch (sClockPosition) {
-            case PrefKeys.POSITION_HIDE:
+            case "hide":
+            case "3":
                 clock.setVisibility(View.GONE);
                 break;
 
-            case PrefKeys.POSITION_CENTER:
+            case "center":
+            case "1":
                 clock.setVisibility(View.VISIBLE);
                 if (centerContainer != null) {
                     moveToParent(clock, centerContainer, 0);
@@ -222,7 +226,8 @@ public class StatusBarLayoutHook {
                 applyMargins(clock, sOffsetX, sOffsetY);
                 break;
 
-            case PrefKeys.POSITION_RIGHT:
+            case "right":
+            case "2":
                 clock.setVisibility(View.VISIBLE);
                 if (rightContainer != null) {
                     moveToParent(clock, rightContainer, 0);
@@ -230,7 +235,8 @@ public class StatusBarLayoutHook {
                 applyMargins(clock, sOffsetX, sOffsetY);
                 break;
 
-            case PrefKeys.POSITION_LEFT:
+            case "left":
+            case "0":
             default:
                 clock.setVisibility(View.VISIBLE);
                 restoreToOriginal(clock, originalParent, holder.originalIndex);
@@ -295,13 +301,46 @@ public class StatusBarLayoutHook {
 
     public static void loadPrefs(XSharedPreferences prefs) {
         if (prefs == null) return;
-        sModuleEnabled = prefs.getBoolean(PrefKeys.KEY_MODULE_ENABLED, PrefKeys.DEFAULT_MODULE_ENABLED);
+        prefs.reload();
+        sModuleEnabled = prefs.getBoolean(PrefKeys.KEY_MODULE_ENABLED, true);
+        sClockPosition = prefs.getString("key_clock_position", "left");
+        sOffsetX = prefs.getInt("key_horizontal_offset", 0);
+        sOffsetY = prefs.getInt("key_vertical_offset", 0);
+    }
+
+    // --- 植入的动态广播接收器 ---
+    private static void ensureBroadcastReceiver(Context context) {
+        if (sDynamicReceiver != null || context == null) return;
+
+        sDynamicReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context ctx, Intent intent) {
+                if (PrefKeys.ACTION_PREF_CHANGED.equals(intent.getAction())) {
+                    if (intent.hasExtra(PrefKeys.KEY_MODULE_ENABLED)) {
+                        sModuleEnabled = intent.getBooleanExtra(PrefKeys.KEY_MODULE_ENABLED, sModuleEnabled);
+                    }
+                    if (intent.hasExtra("key_clock_position")) {
+                        sClockPosition = intent.getStringExtra("key_clock_position");
+                    }
+                    if (intent.hasExtra("key_horizontal_offset")) {
+                        sOffsetX = intent.getIntExtra("key_horizontal_offset", sOffsetX);
+                    }
+                    if (intent.hasExtra("key_vertical_offset")) {
+                        sOffsetY = intent.getIntExtra("key_vertical_offset", sOffsetY);
+                    }
+                    // 收到新边距后，实时触发布局刷新
+                    applyPositionToAll();
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter(PrefKeys.ACTION_PREF_CHANGED);
         try {
-            sClockPosition = Integer.parseInt(prefs.getString(PrefKeys.KEY_CLOCK_POSITION, String.valueOf(PrefKeys.DEFAULT_CLOCK_POSITION)));
-        } catch (Exception e) {
-            sClockPosition = prefs.getInt(PrefKeys.KEY_CLOCK_POSITION, PrefKeys.DEFAULT_CLOCK_POSITION);
+            context.getApplicationContext().registerReceiver(sDynamicReceiver, filter, Context.RECEIVER_EXPORTED);
+        } catch (Throwable t) {
+            try {
+                context.getApplicationContext().registerReceiver(sDynamicReceiver, filter);
+            } catch (Throwable ignored) {}
         }
-        sOffsetX = prefs.getInt(PrefKeys.KEY_CLOCK_OFFSET_X, PrefKeys.DEFAULT_CLOCK_OFFSET_X);
-        sOffsetY = prefs.getInt(PrefKeys.KEY_CLOCK_OFFSET_Y, PrefKeys.DEFAULT_CLOCK_OFFSET_Y);
     }
 }

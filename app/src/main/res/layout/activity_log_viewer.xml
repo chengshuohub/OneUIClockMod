@@ -3,42 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#121212">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="实时运行日志 (Logcat)"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:paddingBottom="8dp"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#1E1E1E"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/tv_log_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="正在获取日志..."
-            android:textColor="#00FF66"
-            android:textSize="12sp"
-            android:fontFamily="monospace"/>
-    </ScrollView>
+    android:padding="16dp">
 
     <Button
         android:id="@+id/btn_refresh_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="刷新日志"
-        android:backgroundTint="#333333"
-        android:textColor="#FFFFFF"/>
+        android:text="刷新日志" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="12dp"
+        android:background="#1E1E1E"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tv_log_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#00FF00"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:text="正在加载日志..." />
+    </ScrollView>
 </LinearLayout>
